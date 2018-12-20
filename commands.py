@@ -1,11 +1,14 @@
 import discord
 from utils.config import ROLES
 from utils.embeds import Embed
+from utils.roles import is_valid_role
 from discord.utils import get
 from discord.ext.commands import HelpFormatter
 from utils.perms import is_mod_or_admin
 
 formatter = HelpFormatter()
+
+msg_cache = dict()
 
 
 async def help_cmd(bot, ctx, *args):
@@ -40,9 +43,49 @@ async def init(bot, channel, user):
 
             role_group = list(sorted(ROLES.keys()))[i]
             curr_roles = ROLES[role_group]
+            msg_cache[role_group] = init_message
             for r, emoji in curr_roles.items():
                 reaction = get(bot.get_all_emojis(), name=emoji)
                 # if reaction is not a default Discord reaction
                 if reaction is None:
                     reaction = emoji
                 await bot.add_reaction(init_message, reaction)
+
+
+async def add_emoji(bot, channel, user, args):
+    if not is_mod_or_admin(user):
+        await bot.send_message(channel, "Must be mod or admin to initiate")
+    else:
+        if len(args) < 3:
+            await __error_msg("Insufficient arguments", "Must supply <role> <emoji> <category> in respective order",
+                              bot, channel)
+            return False
+        else:
+            # hail to the all-mighty if (yif the if)
+            emote = get(bot.get_all_emojis(), name=args[1])
+            if emote is None:
+                emote = args[1]
+            if not is_valid_role(user, args[0]):
+                await __error_msg("Invaid role", "Role **{}** is invalid. Try again".format(args[0]), bot, channel)
+                return False
+            if args[2] not in ROLES.keys():
+                await __error_msg("Invaid category", "Category **{}** is invalid. Try again".format(args[2]),
+                                  bot, channel)
+                return False
+            if args[0] in ROLES[args[2]]:
+                await __error_msg("Double Entry", "Role **{}** is already in the list of {}".format(args[0], args[2]),
+                                  bot, channel)
+                return False
+            if args[2] not in msg_cache.keys():
+                await __error_msg("Welp IDK", "Restart me. Too much went wrong to fix", bot, channel)
+                return False
+
+            ROLES[args[2]][args[0]] = args[1]
+            # TODO: this code can raise an error if provided an emote that is neither a custom nor normal one
+            await bot.add_reaction(msg_cache[args[2]], emote)
+            return True
+
+
+async def __error_msg(title, message, bot, channel):
+    await bot.send_message(channel, embed=discord.Embed(title=title, type='rich',
+                                                        description=message, color=0xff0000))

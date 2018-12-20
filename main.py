@@ -106,7 +106,7 @@ async def init(ctx):
 async def add(ctx, *args):
     if ctx.message.channel.name == HOST_CHANNEL:
         if await commands.add_emoji(bot, ctx.message.channel, ctx.message.author, args):
-            bot.send_message(ctx.message.author, "Added **{}** to accessible list".format(args[0]))
+            await bot.send_message(ctx.message.author, "Added **{}** to accessible list".format(args[0]))
 
 
 @bot.command(name='remove_react', description='remove reaction from list of choices', aliases=['remove', 'del'],
