@@ -14,7 +14,7 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 TOKEN = os.environ.get('TOKEN')
-
+TOKEN = "NTI0OTQ5OTUyODkyMjM5ODc0.Dv1eng.BAIkP3Ve5A09D48xYhkbUyv6IcE"
 bot = Bot(command_prefix=PREFIX)
 bot.remove_command('help')
 
@@ -97,5 +97,21 @@ async def init(ctx):
     if ctx.message.channel.name == HOST_CHANNEL:
         await commands.init(bot, ctx.message.channel, ctx.message.author)
 
+
+######## These will break if roadbuster's PR happens ########
+
+
+@bot.command(name='add_react', description='add reaction to list of choices', aliases=['add'],
+             brief='add reaction', pass_context=True)
+async def add(ctx, *args):
+    if ctx.message.channel.name == HOST_CHANNEL:
+        if await commands.add_emoji(bot, ctx.message.channel, ctx.message.author, args):
+            bot.send_message(ctx.message.author, "Added **{}** to accessible list".format(args[0]))
+
+
+@bot.command(name='remove_react', description='remove reaction from list of choices', aliases=['remove', 'del'],
+             brief='remove reaction', pass_context=True)
+async def remove(ctx, *args):
+    return
 
 bot.run(TOKEN)
