@@ -112,6 +112,9 @@ async def add(ctx, *args):
 @bot.command(name='remove_react', description='remove reaction from list of choices', aliases=['remove', 'del'],
              brief='remove reaction', pass_context=True)
 async def remove(ctx, *args):
-    return
+    if ctx.message.channel.name == HOST_CHANNEL:
+        if await commands.remove_emoji(bot, ctx.message.channel, ctx.message.author, args):
+            await bot.send_message(ctx.message.author, "Removed **{}** from accessible list".format(args[0]))
+
 
 bot.run(TOKEN)

@@ -55,35 +55,62 @@ async def init(bot, channel, user):
 async def add_emoji(bot, channel, user, args):
     if not is_mod_or_admin(user):
         await bot.send_message(channel, "Must be mod or admin to initiate")
+        return False
     else:
         if len(args) < 3:
             await __error_msg("Insufficient arguments", "Must supply <role> <emoji> <category> in respective order",
                               bot, channel)
             return False
-        else:
-            # hail to the all-mighty if (yif the if)
-            emote = get(bot.get_all_emojis(), name=args[1])
-            if emote is None:
-                emote = args[1]
-            if not is_valid_role(user, args[0]):
-                await __error_msg("Invaid role", "Role **{}** is invalid. Try again".format(args[0]), bot, channel)
-                return False
-            if args[2] not in ROLES.keys():
-                await __error_msg("Invaid category", "Category **{}** is invalid. Try again".format(args[2]),
-                                  bot, channel)
-                return False
-            if args[0] in ROLES[args[2]]:
-                await __error_msg("Double Entry", "Role **{}** is already in the list of {}".format(args[0], args[2]),
-                                  bot, channel)
-                return False
-            if args[2] not in msg_cache.keys():
-                await __error_msg("Welp IDK", "Restart me. Too much went wrong to fix", bot, channel)
-                return False
+        # hail to the all-mighty if (yif the if)
+        emote = get(bot.get_all_emojis(), name=args[1])
+        if emote is None:
+            emote = args[1]
+        if not is_valid_role(user, args[0]):
+            await __error_msg("Invalid role", "Role **{}** is invalid. Try again".format(args[0]), bot, channel)
+            return False
+        if args[2] not in ROLES.keys():
+            await __error_msg("Invalid category", "Category **{}** is invalid. Try again".format(args[2]),
+                              bot, channel)
+            return False
+        if args[0] in ROLES[args[2]]:
+            await __error_msg("Double Entry", "Role **{}** is already in the list of {}".format(args[0], args[2]),
+                              bot, channel)
+            return False
+        if args[2] not in msg_cache.keys():
+            await __error_msg("Welp IDK", "Restart me. Too much went wrong to fix", bot, channel)
+            return False
 
-            ROLES[args[2]][args[0]] = args[1]
-            # TODO: this code can raise an error if provided an emote that is neither a custom nor normal one
-            await bot.add_reaction(msg_cache[args[2]], emote)
-            return True
+        ROLES[args[2]][args[0]] = args[1]
+        # TODO: this code can raise an error if provided an emote that is neither a custom nor normal one
+        await bot.add_reaction(msg_cache[args[2]], emote)
+        return True
+
+
+#TODO: doesn't work the way I want it to - does not actually remove the emote. Just the bot's liking of the emote.
+async def remove_emoji(bot, channel, user, args):
+    if not is_mod_or_admin(user):
+        await bot.send_message(channel, "Must be mod or admin to initiate")
+        return False
+
+    if len(args) < 2:
+        await __error_msg("Insufficient arguments", "Must supply <role> <category> in respective order",
+                          bot, channel)
+        return False
+    if args[1] not in ROLES.keys():
+        await __error_msg("Invalid category", "Category **{}** is invalid. Try again".format(args[1]),
+                          bot, channel)
+        return False
+    if args[0] not in ROLES[args[1]]:
+        await __error_msg("Invalid Role", "Role **{}** was not found. Try again".format(args[0]),
+                          bot, channel)
+        return False
+    if args[1] not in msg_cache.keys():
+        await __error_msg("Welp IDK", "Restart me. Too much went wrong to fix", bot, channel)
+        return False
+
+    await bot.remove_reaction(msg_cache[args[1]], ROLES[args[1]][args[0]], bot.user)
+    del ROLES[args[1]][args[0]]
+    return True
 
 
 async def __error_msg(title, message, bot, channel):

@@ -14,29 +14,29 @@ ROLES = {
     'clears': {
         '0': '❌',
         '1': '🙅',
-        # '2': 'stopblob'
+        '2': 'stopblob'
     },
     'languages': {
-        # 'C++': 'c_plus',
-        # 'C': 'c_reg',
-        # 'C#': 'c_sharp',
-        # 'Erlang': 'erlang',
-        # 'Go': 'go',
-        # 'Haskell': 'haskell',
-        # 'Java': 'java',
-        # 'Javascript': 'js',
+        'C++': 'c_plus',
+        'C': 'c_reg',
+        'C#': 'c_sharp',
+        'Erlang': 'erlang',
+        'Go': 'go',
+        'Haskell': 'haskell',
+        'Java': 'java',
+        'Javascript': 'js',
         'Lisp': '👄',
-        # 'Lua': 'lua',
-        # 'Objective-C': 'obj_c',
-        # 'Ocaml': 'ocaml',
-        # 'PHP': 'php',
-        # 'Python': 'python',
-        # 'R': '🇷',
-        # 'Ruby': 'ruby',
-        # 'Rust': 'rust',
-        # 'Scala': 'scala',
-        # 'SQL': 'sql',
-        # 'Swift': 'swift'
+        'Lua': 'lua',
+        'Objective-C': 'obj_c',
+        'Ocaml': 'ocaml',
+        'PHP': 'php',
+        'Python': 'python',
+        'R': '🇷',
+        'Ruby': 'ruby',
+        'Rust': 'rust',
+        'Scala': 'scala',
+        'SQL': 'sql',
+        'Swift': 'swift'
     },
     'seniorities': {
         'Student': '🎓',
@@ -51,7 +51,7 @@ ROLES = {
     'xtra': {
         'Notifications': '💡',
         'Interview Notifications': '🔔',
-        # 'Military Veteran': 'vet'
+        'Military Veteran': 'vet'
     }
 }
 
