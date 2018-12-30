@@ -12,11 +12,13 @@ from utils.roles import add_role, get_role_from_reaction, remove_role, remove_al
 from utils.emojis import get_emoji_from_reaction, is_clearing_emoji, is_listed_emoji
 import commands
 
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
-
 TOKEN = os.environ.get('TOKEN')
 
+if TOKEN is None:
+    dotenv_path = join(dirname(__file__), '.env')
+    load_dotenv(dotenv_path)
+    TOKEN = os.environ.get('TOKEN')
+    
 bot = Bot(command_prefix=PREFIX)
 bot.remove_command('help')
 
